@@ -11,6 +11,10 @@ services:
       - ./src:/app
     depends_on:
       - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=anto1661
     networks:
       - my-network
 
@@ -33,7 +37,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: antonio-emilio_6@hotmail.com
       PGADMIN_DEFAULT_PASSWORD: anto1661
     ports:
-      - "5050:5050"
+      - "15432:80"
     networks:
       - my-network
 
