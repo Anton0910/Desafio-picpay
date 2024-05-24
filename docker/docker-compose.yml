@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src:/app
+    depends_on:
+      - db
+    networks:
+      - my-network
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: anto1661
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    networks:
+      - my-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: antonio-emilio_6@hotmail.com
+      PGADMIN_DEFAULT_PASSWORD: anto1661
+    ports:
+      - "5050:5050"
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
