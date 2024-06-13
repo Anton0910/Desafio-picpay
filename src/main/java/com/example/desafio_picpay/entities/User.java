@@ -7,11 +7,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 
 @Entity
-@Table(name = "usuarios", uniqueConstraints = {
+@Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = "cpf"),
         @UniqueConstraint(columnNames = "email")
 })
@@ -22,13 +23,13 @@ import java.util.UUID;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", updatable = false, unique = true, nullable = false)
+    @Column(name = "id_usuario", updatable = false, unique = true, nullable = false)
     private UUID id_usuario;
 
     @Column(name = "nomecompleto", updatable = false, unique = true, nullable = false)
     private String nomeCompleto;
 
-    @Column(unique = true, name = "cpf", nullable = false)
+    @Column(unique = true, name = "cpf_cnpj", nullable = false)
     private String cpf_cnpj;
 
     @Column(unique = true, name = "email", nullable = false)
@@ -37,7 +38,12 @@ public class User {
     @Column(name = "senha", nullable = false)
     private String senha;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "tipo", nullable = false)
-    private UserTypeEnum tipo;
+    private String tipoUsuario;
+
+    @Column(name = "saldo", nullable = false)
+    private BigDecimal saldo;
+
+
+
 }

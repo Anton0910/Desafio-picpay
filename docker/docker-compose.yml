@@ -19,13 +19,15 @@ services:
       - my-network
 
   db:
-    image: postgres:latest
+    image: postgres:15.3-alpine
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: anto1661
     ports:
       - "5432:5432"
+    expose:
+      - "5432"
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     networks:

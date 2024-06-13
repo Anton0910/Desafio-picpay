@@ -1,19 +1,36 @@
 package com.example.desafio_picpay.dto;
 
-import com.example.desafio_picpay.entities.UserTypeEnum;
+import com.example.desafio_picpay.entities.User;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
+import lombok.Data;
 
+import java.math.BigDecimal;
+
+@Data
 @Builder
-public record UserDto(
+public class UserDto {
         @NotNull
-        String name,
+        private String name;
         @NotNull
-        String cpf,
+        private String cpf;
         @NotNull
-        String email,
+        private String email;
         @NotNull
-        String senha,
+        private String senha;
         @NotNull
-        UserTypeEnum tipo) {
+        private BigDecimal saldo;
+        @NotNull
+        private String tipo;
+
+        public static User userDtoToUser(UserDto user){
+                return User.builder()
+                        .cpf_cnpj(user.getCpf())
+                        .email(user.getEmail())
+                        .nomeCompleto(user.getName())
+                        .senha(user.getSenha())
+                        .tipoUsuario(user.getTipo())
+                        .saldo(user.getSaldo())
+                        .build();
+        }
 }
