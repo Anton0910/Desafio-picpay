@@ -33,4 +33,15 @@ public class UserDto {
                         .saldo(user.getSaldo())
                         .build();
         }
+
+        public static UserDto userToUserDto(User user){
+                return UserDto.builder()
+                        .cpf(user.getCpf_cnpj())
+                        .email(user.getEmail())
+                        .name(user.getNomeCompleto())
+                        .senha(user.getSenha())
+                        .tipo(user.getTipoUsuario())
+                        .saldo(user.getSaldo())
+                        .build();
+        }
 }

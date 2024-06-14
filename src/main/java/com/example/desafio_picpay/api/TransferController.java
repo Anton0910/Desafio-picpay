@@ -21,7 +21,7 @@ public class TransferController {
 
     @PostMapping("/payment")
     public ResponseEntity<TransferDto> saveTransfer(TransferDto transferDto) {
-        transferService.saveTransfer(transferDto);
+        transferService.payment(transferDto);
         return ResponseEntity.ok(transferDto);
     }
 }

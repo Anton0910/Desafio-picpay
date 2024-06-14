@@ -1,5 +1,6 @@
 package com.example.desafio_picpay.dto;
 
+import com.example.desafio_picpay.entities.Transfer;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.ReadOnlyProperty;
@@ -21,5 +22,9 @@ public class TransferDto {
     private Double saldoRecebedor;
 
     private String text;
+
+  public TransferDto (String text){
+      this.text = text;
+  }
 
 }
