@@ -18,11 +18,11 @@ public class Transfer {
     @Column(name = "id_transferencia", updatable = false, unique = true, nullable = false)
     private UUID idTransferencia;
 
-    @Column(name = "id_pagador", nullable = false)
-    private UUID idPagador;
+    @Column(name = "email_pagador", nullable = false)
+    private String  emailPagador;
 
-    @Column(name = "id_recebedor", nullable = false)
-    private UUID idRecebedor;
+    @Column(name = "email_recebedor", nullable = false)
+    private String emailRecebedor;
 
     @Column(name = "valor", nullable = false)
     private Double valor;

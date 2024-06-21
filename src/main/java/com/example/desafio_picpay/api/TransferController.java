@@ -5,6 +5,7 @@ import com.example.desafio_picpay.service.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,8 +21,9 @@ public class TransferController {
     }
 
     @PostMapping("/payment")
-    public ResponseEntity<TransferDto> saveTransfer(TransferDto transferDto) {
-        transferService.payment(transferDto);
-        return ResponseEntity.ok(transferDto);
+    public ResponseEntity<TransferDto> saveTransfer(@RequestBody TransferDto transferDto) {
+        TransferDto response =  transferService.payment(transferDto);
+
+        return ResponseEntity.ok(response);
     }
 }

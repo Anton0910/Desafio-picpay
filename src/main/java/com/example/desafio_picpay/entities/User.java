@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@DynamicUpdate
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,10 +29,10 @@ public class User {
     private UUID id_usuario;
 
     @Column(name = "nomecompleto", updatable = false, unique = true, nullable = false)
-    private String nomeCompleto;
+    private String name;
 
     @Column(unique = true, name = "cpf_cnpj", nullable = false)
-    private String cpf_cnpj;
+    private String cpf;
 
     @Column(unique = true, name = "email", nullable = false)
     private String email;
@@ -43,7 +45,5 @@ public class User {
 
     @Column(name = "saldo", nullable = false)
     private BigDecimal saldo;
-
-
 
 }
