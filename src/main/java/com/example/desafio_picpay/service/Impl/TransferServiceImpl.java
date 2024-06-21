@@ -27,6 +27,10 @@ public class TransferServiceImpl implements TransferService {
     private final AuthorizationTransfer authorizationTransfer;
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
+    private final String TRANSFERENCIA_NEGADA = "Transferência não autorizada";
+    private final String SALDO_INSUFICIENTE = "Saldo insuficiente";
+    private final String LOJISTA_NEGADO = "Lojista não pode realizar transferência";
+    private final String TRANSFERENCIA_REALIZADA = "Transferência realizada com sucesso";
 
     @Autowired
     public TransferServiceImpl(final TransferRepository transferRepository,
@@ -43,9 +47,9 @@ public class TransferServiceImpl implements TransferService {
 
 
     public TransferDto payment(TransferDto transferDto) {
-        String text = "Erro na transação";
         User pagador;
         User recebedor;
+
         try {
             pagador =  userRepository.findByEmail(transferDto.getEmailPagador());
             recebedor = userRepository.findByEmail(transferDto.getEmailRecebedor());
@@ -53,34 +57,54 @@ public class TransferServiceImpl implements TransferService {
             throw new RuntimeException(e);
         }
 
-
-        if (pagador.getTipoUsuario().equals(EnumTipoUsuario.LOJISTA.name())) {
-            text = "Lojistas não podem fazer transferências";
-        } else if (pagador.getSaldo().compareTo(BigDecimal.valueOf(transferDto.getValor())) <= 0) {
-            text = "Saldo insuficiente";
-        } else {
-            pagador.setSaldo(pagador.getSaldo().subtract(BigDecimal.valueOf(transferDto.getValor())));
-            recebedor.setSaldo(recebedor.getSaldo().add(BigDecimal.valueOf(transferDto.getValor())));
-
-            boolean authorization = authorizationTransfer.authorizationTransfer();
-            if (authorization) {
-
-                userRepository.save(pagador);
-                userRepository.save(recebedor);
-                transferRepository.save(modelMapper.map(transferDto, Transfer.class));
-                text = "Transferência realizada com sucesso";
-
-                transferDto.setText(text);
-                transferDto.setSaldoPagador(pagador.getSaldo().doubleValue());
-                transferDto.setSaldoRecebedor(recebedor.getSaldo().doubleValue());
-                return transferDto;
-            }
+       if (validateType(pagador)) {
+            return new TransferDto(LOJISTA_NEGADO);
         }
+       else if (validateSaldo(pagador, transferDto)) {
+            return new TransferDto(SALDO_INSUFICIENTE);
+        }
+       else {
+           return makeTransfer(pagador, recebedor, transferDto);
+       }
 
-        return new TransferDto(text);
     }
 
+    public boolean validateType(User user) {
+        return user.getTipoUsuario().equals(EnumTipoUsuario.LOJISTA.name());
+    }
 
+    public boolean validateSaldo(User user, TransferDto transferDto) {
+        return user.getSaldo().compareTo(BigDecimal.valueOf(transferDto.getValor())) <= 0;
+    }
+
+    public TransferDto makeTransfer(User pagador, User recebedor, TransferDto transferDto) {
+        pagador.setSaldo(pagador.getSaldo().subtract(BigDecimal.valueOf(transferDto.getValor())));
+        recebedor.setSaldo(recebedor.getSaldo().add(BigDecimal.valueOf(transferDto.getValor())));
+
+        boolean authorization = authorizationTransfer.authorizationTransfer();
+        if (authorization) {
+
+            return   saveTransfer(pagador, recebedor, transferDto);
+        }
+
+        return new TransferDto(TRANSFERENCIA_NEGADA);
+    }
+
+    public TransferDto saveTransfer (User pagador, User recebedor, TransferDto transferDto){
+        userRepository.save(pagador);
+        userRepository.save(recebedor);
+        transferRepository.save(modelMapper.map(transferDto, Transfer.class));
+        
+        return updateTransfer(transferDto, TRANSFERENCIA_REALIZADA, pagador, recebedor);
+        
+    }
+
+    public TransferDto updateTransfer (TransferDto transferDto, String text, User pagador, User recebedor){
+        transferDto.setText(text);
+        transferDto.setSaldoPagador(pagador.getSaldo().doubleValue());
+        transferDto.setSaldoRecebedor(recebedor.getSaldo().doubleValue());
+        return transferDto;
+    } 
 
     @Transactional
     public TransferDto findAll() {
